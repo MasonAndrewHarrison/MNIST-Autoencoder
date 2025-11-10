@@ -35,6 +35,12 @@ loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
 encoder = Encoder(latent_size).to(device)
 decoder = Decoder(latent_size).to(device)
 
+if os.path.exists("Decoder_Weights.pth"):
+    decoder.load_state_dict(torch.load("Decoder_Weights.pth", map_location=device))
+
+if os.path.exists("Encoder_Weights.pth"):
+    encoder.load_state_dict(torch.load("Encoder_Weights.pth", map_location=device))
+
 opt_encoder = optim.Adam(encoder.parameters(), lr=learning_rate)
 opt_decoder = optim.Adam(decoder.parameters(), lr=learning_rate)
 
@@ -63,11 +69,12 @@ for epoch in range(epochs):
             torch.save(encoder.state_dict(), "Encoder_Weights.pth")
             torch.save(decoder.state_dict(), "Decoder_Weights.pth")
 
-            print(loss.item())
-            image = image.detach().to("cpu")
+            #image = decoded_image.detach().to("cpu")
+            #plt.imshow(image[0, 0,:, :], cmap="gray")
+            #plt.show()
 
-            plt.imshow(image[0, 0,:, :], cmap="gray")
-            plt.show()
+        elif i % 100 == 0:
+            print(loss.item())
 
 
         
