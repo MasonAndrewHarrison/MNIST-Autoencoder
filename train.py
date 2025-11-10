@@ -32,7 +32,6 @@ transform = transforms.Compose([
 dataset = datasets.MNIST(root="./data", transform=transform, download=True)
 loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
 
-
 encoder = Encoder(latent_size).to(device)
 decoder = Decoder(latent_size).to(device)
 
