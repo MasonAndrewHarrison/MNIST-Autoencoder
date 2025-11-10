@@ -6,20 +6,7 @@ from torch.utils.data import DataLoader
 from matplotlib.widgets import Slider, Button
 from model import Decoder, Encoder
 
-transform = transforms.Compose([
-    transforms.Resize(64),
-    transforms.ToTensor(),
-    transforms.RandomAffine(
-        degrees=0,
-        translate=(0.0, 0.0),
-        scale=(1.0, 1.0),
-    ),
-    transforms.Normalize((0.5,),(0.5,)),
-])
 
-
-dataset = datasets.MNIST(root="./data", transform=transform, download=True)
-loader = DataLoader(dataset, batch_size=100, shuffle=True)
 
 latent_size = 80
 
@@ -33,13 +20,7 @@ encoder.load_state_dict(torch.load("Encoder_Weights.pth", map_location=device))
 decoder.eval()
 encoder.eval()
 
-real_image,_ = dataset[0]
-latent_space = encoder(real_image.unsqueeze(0).to(device))
-print(latent_space)
-
-
 z_noise = torch.randn(1, latent_size, 1, 1).to(device)
-z_noise = latent_space
 image = decoder(z_noise).view(64, 64).detach().cpu()
 
 fig, ax = plt.subplots(figsize=(21, 15))
