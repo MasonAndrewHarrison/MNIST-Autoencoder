@@ -21,6 +21,7 @@ transform = transforms.Compose([
 dataset = datasets.MNIST(root="./data", transform=transform, download=True)
 
 latent_size = 80
+latent_list = []
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -29,6 +30,10 @@ encoder.load_state_dict(torch.load("Encoder_Weights.pth", map_location=device))
 encoder.eval()
 
 for i, (real_image,_) in enumerate(dataset):
+    if i > 1000: break
     with torch.no_grad():
         latent_space = encoder(real_image.unsqueeze(0).to(device))
-    print(latent_space)
+    latent_list.append(latent_space)
+
+all_latents = torch.cat(latent_list, dim=0)
+torch.save(all_latents, "latents.pt")
